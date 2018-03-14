@@ -1,0 +1,31 @@
+change=
+		kinetic energy
+	Units: **undefined**
+	
+change 0=
+	potential energy - POWER(potential energy ,3)  - friction*kinetic energy +
+ Excitation
+Units: **undefined**
+
+Excitation=
+	SIN(Time)
+Units: **undefined**
+
+friction=
+	0.01
+Units: **undefined** [0,1,0.01]    <-- min, max, step (for the vensim UI slider)
+
+kinetic energy= INTEG (
+	change 0,
+		1)                          <-- initial value
+Units: **undefined**
+
+potential energy= INTEG (
+	change,
+		starting point)
+Units: **undefined**
+
+starting point=
+	1
+Units: **undefined**
+

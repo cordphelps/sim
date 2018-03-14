@@ -1,0 +1,122 @@
+---
+title: "simecol predator prey"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# also : https://unamatematicaseltigre.blogspot.com/2016/09/population-growth-models-using-rsimecol.html
+
+library("simecol")
+
+pp.model <- new("odeModel",                   # object class = 'odeModel'
+                
+         main = function(times, y, parms) {   # object method
+                                              # simecol magic: 2nd argument 'y' points to 'init'
+          with(as.list(c(parms, y)), {  
+            
+            #newPred <- multiply(birthraeY, encounter)
+            #newPrey <- multiply(prey, birthrateX)
+            
+            newPred <- multiply(birthraeY, multiply(predator, prey))
+            newPrey <- multiply(birthrateX, prey)
+
+            #predator <- newPred - dying  
+            #prey <- newPrey - killed 
+            
+            predator <- newPred - multiply(deathrate, predator)  
+            prey <- newPrey - multiply(killrate, multiply(predator, prey))
+            
+            #dying <- multiply(deathrate, predator)
+            
+            #killed <- multiply(killrate, encounter)
+            #killed <- multiply(killrate, multiply(predator, prey))
+            
+            #encounter <- multiply(predator, prey)
+	
+            list(c(predator, prey))    # object attributes (data) 
+           })
+         },
+         equations = list(
+           multiply = function(i, j) {i*j}
+         ),
+        times = seq(0, 100, 0.125), # 0.125
+        parms = c(birthraeY=1, birthrateX=1, deathrate=1, killrate=1),
+        init = c(predator=4, prey=4),
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
+        
+      )
+```
+
+
+```{r}
+pp.sim <- sim(pp.model)
+plot(pp.sim)
+```
+
+
+```{r}
+
+plotPopulation <- function(obj, ...) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  o.df <- out(obj)  # output a dataframe
+  
+  gg1 <- ggplot()  +
+    geom_path(aes(x=time, y=predator), o.df,  
+    	colour = "purple", size=1, alpha=0.6)  +
+    geom_path(aes(x=time, y=prey), o.df, colour = "green", size=1, alpha=0.8)
+  
+  gg2 <- ggplot()  +
+    geom_path(aes(x=prey, y=predator), o.df,  colour = "purple", alpha=0.6) 
+    #scale_x_continuous(limits = c(1.025, 1.1)) 
+    #scale_y_continuous(limits = c(0, 2))
+  
+  grid.arrange(gg1, gg2)
+
+}
+
+```
+
+```{r}
+ plotPopulation(pp.sim)
+```
+
+```{r}
+
+head(out(pp.sim))
+
+```
+
+```{r}
+main(pp.sim)
+```
+
+```{r}
+init(pp.sim)
+```
+
+```{r}
+parms(pp.sim)
+```
+
+```{r}
+equations(pp.sim)
+```
+
+```{r}
+solver(pp.sim)
+```
+
+```{r}
+class(pp.sim)
+```
+
+```{r}
+str(pp.sim)
+```

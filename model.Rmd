@@ -1,0 +1,103 @@
+---
+title: "simecol"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# https://cran.r-project.org/web/packages/simecol/vignettes/b-simecol-howtos.pdf
+
+library("simecol")
+
+f <- function(x, y, k){x*y / (1+k*x)} # Holling II 
+
+# x : food resource density 
+# y : "attack rate" : food encounter rate per unit of food density
+# k : aveage time processing a food unit
+# function returns f, the food intake rate
+# (consumption is a function of food density; https://en.wikipedia.org/wiki/Functional_response)
+#
+# UPCA Model (Blasius)
+# u : resource (vegetation)
+# v : producer (herbivores)
+# w : consumer (predator)
+# alpha1 : interspecific interaction strength term
+# alpha2 : interspecific interaction strength term
+# wstar : steady state with no species interaction
+#
+# https://pdfs.semanticscholar.org/cd0f/ca6b5b3410259e4b736820e3da1381941250.pdf
+
+upca <- new("odeModel", 
+         main = function(time, y, parms) {
+          with(as.list(c(parms, y)), {
+            du <- a * u - alpha1 * f(u, v, k1)
+            dv <- -b * v + alpha1 * f(u, v, k1) +
+                      - alpha2 * f(v, w, k2)
+            dw <- -c * (w - wstar) + alpha2 * f(v, w, k2)
+            list(c(du, dv, dw))
+           })
+         },
+        times = seq(0, 100, 0.1),
+        parms = c(a=1, b=1, c=10, alpha1=0.2, alpha2=1,
+        k1=0.05, k2=0, wstar=0.006),
+        init = c(u=10, v=5, w=0.1),
+        solver = "lsoda"
+      )
+```
+
+
+```{r}
+upca <- sim(upca)
+plot(upca)
+```
+
+
+```{r}
+# extract the results from upca with a so called accessor function out, and to use arbitrary, user-defined plot functions
+
+plotupca <- function(obj, ...) {
+  o <- out(obj)
+  matplot(o[,1], o[,-1], type="l", ...)
+  legend("topright", legend = c("u", "v", "w"), lty=1:3, , bg="white",col = 1:3)
+}
+
+```
+
+```{r}
+ plotupca(upca)
+```
+
+```{r}
+head(out(upca))
+```
+
+```{r}
+main(upca)
+```
+
+```{r}
+init(upca)
+```
+
+```{r}
+parms(upca)
+```
+
+```{r}
+equations(upca)
+```
+
+```{r}
+solver(upca)
+```
+
+```{r}
+class(upca)
+```
+
+```{r}
+str(upca)
+```

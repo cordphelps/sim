@@ -1,0 +1,115 @@
+---
+title: "simecol bistable"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library("simecol")
+
+bis.model <- new("odeModel",                   # object class = 'odeModel'
+                
+         main = function(times, y, parms) {   # object method
+                                              # simecol magic: 2nd argument 'y' points to 'init'
+          with(as.list(c(parms, y)), {
+            
+            # kineticEnergy = change0
+            # potentialEnergy = change
+
+            change0dt <- change0(friction, factor, potentialEnergy, kineticEnergy, times)
+            changedt <- kineticEnergy
+            
+            kineticEnergy <- changedt
+            potentialEnergy <- change0dt
+            
+            list(c(potentialEnergy, kineticEnergy))    # object attributes (data) 
+            
+            # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
+            # change = kinetic energy
+            # Excitation = SIN(Time)
+            
+           })
+         },
+         equations = list(
+           excite = function(i) {sin( i / (2*pi) )},
+           power = function(i) {i^3},
+           change = function(i) {i},
+           change0 = function(h, i, j, k, t) { (j - power(j) ) - h * k + excite(t)}
+         ),
+        times = seq(0, 50, .015625),
+        parms = c(factor=1, friction=.01),
+        init = c(kineticEnergy=1, potentialEnergy=1),
+        solver = "rk4"                      # 'lsoda' available for 'odemodel' class
+        
+      )
+```
+
+
+```{r}
+bis.sim <- sim(bis.model)
+plot(bis.sim)
+```
+
+
+```{r}
+
+plotupca <- function(obj, ...) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  o.df <- out(obj)  # output a dataframe
+  
+  gg1 <- ggplot()  +
+    geom_line(aes(x=time, y=potentialEnergy), o.df, colour = "purple", size=1, alpha=0.8)  +
+    geom_line(aes(x=time, y=kineticEnergy), o.df, colour = "green", size=1, alpha=0.8)
+  
+  gg2 <- ggplot()  +
+    geom_path(aes(x=potentialEnergy, y=kineticEnergy), o.df,  colour = "purple", alpha=0.6) 
+  
+  
+  grid.arrange(gg1, gg2, ncol=2, nrow=1)
+
+}
+
+```
+
+```{r}
+ plotupca(bis.sim)
+```
+
+```{r}
+head(out(bis.sim))
+```
+
+```{r}
+main(bis.sim)
+```
+
+```{r}
+init(bis.sim)
+```
+
+```{r}
+parms(bis.sim)
+```
+
+```{r}
+equations(bis.sim)
+```
+
+```{r}
+solver(bis.sim)
+```
+
+```{r}
+class(bis.sim)
+```
+
+```{r}
+str(bis.sim)
+```

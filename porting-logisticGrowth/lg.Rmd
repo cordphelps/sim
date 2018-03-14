@@ -1,0 +1,97 @@
+---
+title: "simecol logistic growth"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library("simecol")
+
+lg.model <- new("odeModel",                   # object class = 'odeModel'
+                
+         main = function(times, y, parms) {   # object method
+                                              # simecol magic: 2nd argument 'y' points to 'init'
+          with(as.list(c(parms, y)), { 
+            
+            Population <- rate
+	          rate <- growthConstant * Population * (1 - Population / Limit )
+	          
+            list(c(Population, rate))    # object attributes (data) 
+           })
+         },
+         
+        times = seq(0, 100, 1),
+        parms = c(growthConstant=1, Limit=1000),
+        init = c(Population=10, rate=1),
+        
+        solver = "rk4"                      # 'lsoda' available for 'odemodel' class
+        
+      )
+```
+
+
+```{r}
+lg.sim <- sim(lg.model)
+plot(lg.sim)
+```
+
+
+```{r}
+
+plotupca <- function(obj, ...) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  o.df <- out(obj)  # output a dataframe
+  
+  gg1 <- ggplot()  +
+    geom_line(aes(x=time, y=Population), o.df,  
+    	colour = "purple", size=1, alpha=0.6)  
+ 
+  
+  grid.arrange(gg1)
+
+}
+
+```
+
+```{r}
+ plotupca(lg.sim)
+```
+
+```{r}
+head(out(lg.sim))
+```
+
+```{r}
+main(lg.sim)
+```
+
+```{r}
+init(lg.sim)
+```
+
+```{r}
+parms(lg.sim)
+```
+
+```{r}
+equations(lg.sim)
+```
+
+```{r}
+solver(lg.sim)
+```
+
+```{r}
+class(lg.sim)
+```
+
+```{r}
+str(lg.sim)
+```

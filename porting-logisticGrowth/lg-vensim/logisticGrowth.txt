@@ -1,0 +1,16 @@
+growth constant=
+		1
+	Units: **undefined**
+	
+Limit=
+	1000
+Units: **undefined**
+
+Population= INTEG (
+	rate,
+		10)                <-- initial value
+Units: **undefined**
+
+rate=
+	growth constant * Population * (1 - Population / Limit )
+Units: **undefined**

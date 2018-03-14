@@ -1,0 +1,25 @@
+A=
+		1
+	Units: **undefined**
+	
+B=
+	3
+Units: **undefined**
+
+"dX/dt"=
+	A + X^2 * Y - B* X - X
+Units: **undefined**
+
+"dY/dt"=
+	B * X - X^2 * Y
+Units: **undefined**
+
+X= INTEG (
+	"dX/dt",
+		0)
+Units: **undefined**
+
+Y= INTEG (
+	"dY/dt",
+		0)
+Units: **undefined**

@@ -1,0 +1,29 @@
+change=
+		kinetic energy
+	Units: **undefined**
+	
+change 0=
+	factor * ( potential energy - POWER(potential energy ,3))  - friction*kinetic energy
+Units: **undefined**
+
+factor=
+	1
+Units: **undefined**
+
+friction=
+	0.01
+Units: **undefined** [0,1,0.01]    <-- "slider" for a variable; min, max, step
+
+kinetic energy= INTEG (
+	change 0,
+		1)                    <-- initial value
+Units: **undefined**
+
+potential energy= INTEG (
+	change,
+		starting point)        <-- initial value
+Units: **undefined**
+
+starting point=
+	1
+Units: **undefined**

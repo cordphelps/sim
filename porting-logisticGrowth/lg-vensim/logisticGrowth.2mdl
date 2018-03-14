@@ -1,0 +1,101 @@
+{UTF-8}
+growth constant=
+	1
+	~	
+	~		|
+
+Limit=
+	1000
+	~	
+	~		|
+
+rate=
+	growth constant * Population * (1 - Population / Limit )
+	~	
+	~		|
+
+Population= INTEG (
+	rate,
+		10)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Second
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Second
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Second [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Second [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|72,72,100,0
+10,1,Population,375,156,40,20,3,3,0,0,0,0,0,0
+12,2,48,161,157,10,8,0,3,0,0,-1,0,0,0
+1,3,5,1,4,0,0,22,0,0,0,-1--1--1,,1|(297,157)|
+1,4,5,2,100,0,0,22,0,0,0,-1--1--1,,1|(209,157)|
+11,5,48,253,157,6,8,34,3,0,0,1,0,0,0
+10,6,rate,253,173,14,8,40,3,0,0,-1,0,0,0
+12,7,0,649,193,182,173,3,188,0,0,1,0,0,0
+GRAPH
+10,8,growth constant,319,236,36,25,8,131,0,0,-1,0,0,0
+1,9,8,6,0,0,0,0,0,64,0,-1--1--1,,1|(282,200)|
+10,10,Limit,186,253,17,13,8,131,0,0,-1,0,0,0
+1,11,10,6,0,0,0,0,0,64,0,-1--1--1,,1|(216,215)|
+1,12,1,5,1,0,0,0,0,64,0,-1--1--1,,1|(276,88)|
+///---\\\
+:GRAPH GRAPH
+:TITLE GRAPH
+:X-AXIS Time
+:SCALE
+:VAR Population
+:L<%^E!@
+1:Current.vdf
+9:Current
+22:$,Dollar,Dollars,$s
+22:Hour,Hours
+22:Month,Months
+22:Person,People,Persons
+22:Unit,Units
+22:Week,Weeks
+22:Year,Years
+22:Day,Days
+23:0
+15:0,0,0,1,0,0
+19:100,0
+27:2,
+34:0,
+4:Time
+5:rate
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:7
+41:0
+42:1
+24:0
+25:100
+26:100

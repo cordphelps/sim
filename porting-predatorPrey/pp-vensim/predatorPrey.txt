@@ -1,0 +1,45 @@
+birthraeY=
+		1
+	Units: **undefined**
+	
+birthrateX=
+	1
+Units: **undefined**
+
+deathrate=
+	1
+Units: **undefined**
+
+dying=
+	deathrate*predator
+Units: **undefined**
+
+encounter=
+	predator*prey
+Units: **undefined**
+
+killed=
+	killrate*encounter
+Units: **undefined**
+
+killrate=
+	1
+Units: **undefined**
+
+new pred=
+	birthraeY*encounter
+Units: **undefined**
+
+new prey=
+	prey*birthrateX
+Units: **undefined**
+
+predator= INTEG (
+	new pred-dying,
+		4)
+Units: **undefined**
+
+prey= INTEG (
+	new prey-killed,
+		4)               <-- initial value
+Units: **undefined**

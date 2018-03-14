@@ -1,0 +1,56 @@
+(01)	CF= INTEG (
+		CFV,
+			0)
+	Units: **undefined**
+
+(02)	CFV=
+		Pr*(HTD-CF)
+	Units: **undefined**
+	
+(03)	FINAL TIME  = 50
+	Units: Month
+	The final time for the simulation.
+
+(04)	height=
+		8/3
+	Units: **undefined**
+	
+(05)	HTD= INTEG (
+		HTV,
+			1)
+	Units: **undefined**
+	
+(06)	HTV=
+		CF*(Ray-VTD)-HTD
+	Units: **undefined**
+	
+(07)	INITIAL TIME  = 0
+	Units: Month
+	The initial time for the simulation.
+
+(08)	Pr=
+		10
+	Units: **undefined**
+	
+(09)	Ray=
+		28
+	Units: **undefined**
+	
+(10)	SAVEPER  = 
+       TIME STEP 
+	Units: Month [0,?]
+	The frequency with which output is stored.
+
+(11)	TIME STEP  = 0.0078125
+	Units: Month [0,?]
+	The time step for the simulation.
+
+(12)	VTD= INTEG (
+		VTV,
+			0)
+	Units: **undefined**
+	
+(13)	VTV=
+		CF*HTD-height*VTD
+	Units: **undefined**
+	

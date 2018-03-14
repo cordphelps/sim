@@ -1,0 +1,100 @@
+---
+title: "simecol Belousov Zhabotinski reaction"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+# https://en.wikipedia.org/wiki/Belousov%E2%80%93Zhabotinsky_reaction
+
+library("simecol")
+
+bz.model <- new("odeModel",                   # object class = 'odeModel'
+                
+         main = function(times, y, parms) {   # object method
+                                              # simecol magic: 2nd argument 'y' points to 'init'
+          with(as.list(c(parms, y)), {        
+            dXdt <- A + X^2 * Y - B* X - X
+            dYdt <- B * X - X^2 * Y
+            list(c(dXdt, dYdt))               # object attributes (data) 
+           })
+         },
+         
+        times = seq(0, 100, 0.1),
+        parms = c(A=1, B=3),
+        init = c(X=0, Y=0),
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
+        
+      )
+```
+
+
+```{r}
+bz.sim <- sim(bz.model)
+plot(bz.sim)
+```
+
+
+```{r}
+
+plotupca <- function(obj, ...) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  o.df <- out(obj)  # output a dataframe
+  
+  gg1 <- ggplot()  +
+    geom_line(aes(x=time, y=X), o.df,  
+    	colour = "purple", size=1, alpha=0.6)  +
+    geom_line(aes(x=time, y=Y), o.df, colour = "green", size=1, alpha=0.8)
+  
+  gg2 <- ggplot()  +
+    geom_point(aes(x=X, y=Y), o.df,  
+    	shape=21, colour = "purple", fill = "plum", alpha=0.6) 
+  
+  grid.arrange(gg1, gg2)
+
+}
+
+```
+
+```{r}
+ plotupca(bz.sim)
+```
+
+```{r}
+head(out(bz.sim))
+```
+
+```{r}
+main(bz.sim)
+```
+
+```{r}
+init(bz.sim)
+```
+
+```{r}
+parms(bz.sim)
+```
+
+```{r}
+equations(bz.sim)
+```
+
+```{r}
+solver(bz.sim)
+```
+
+```{r}
+class(bz.sim)
+```
+
+```{r}
+str(bz.sim)
+```
