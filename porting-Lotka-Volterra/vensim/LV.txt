@@ -1,0 +1,73 @@
+
+(01)	a=
+		10
+	Units: **undefined**
+	
+(02)	b=
+		0.5
+	Units: **undefined**
+	
+(03)	c=
+		1
+	Units: **undefined**
+	
+(04)	d=
+		1
+	Units: **undefined**
+	
+(05)	e=
+		1
+	Units: **undefined**
+	
+(06)	FINAL TIME  = 50
+	Units: Month
+	The final time for the simulation.
+
+
+(07)	FOX= INTEG (
+		FOXnetBirth-FOXnetDeath,
+			FOXinit)
+	Units: **undefined**
+	
+(08)	FOXinit=
+		10
+	Units: **undefined**
+	
+(09)	FOXnetBirth=
+		e*FOX*HARE
+	Units: **undefined**
+	
+(10)	FOXnetDeath=
+		d*FOX
+	Units: **undefined**
+	
+(11)	HARE= INTEG (
+		HAREnetBirth-HAREnetDeath,
+			HAREinit)
+	Units: **undefined**
+	
+(12)	HAREinit=
+		25
+	Units: **undefined**
+	
+(13)	HAREnetBirth=
+		a*HARE - b*(HARE*HARE)
+	Units: **undefined**
+	
+(14)	HAREnetDeath=
+		c*FOX*HARE
+	Units: **undefined**
+	
+(15)	INITIAL TIME  = 0
+	Units: Month
+	The initial time for the simulation.
+
+(16)	SAVEPER  = 
+       TIME STEP 
+	Units: Month [0,?]
+	The frequency with which output is stored.
+
+(17)	TIME STEP  = 0.0078125
+	Units: Month [0,?]
+	The time step for the simulation.
+
