@@ -1,5 +1,5 @@
 ---
-title: "simecol XY molecular diffusion"
+title: "simecol XY molecular diffusion (random walk)"
 output: github_document
 ---
 
