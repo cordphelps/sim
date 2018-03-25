@@ -133,17 +133,33 @@ for (j in 1:50) {
     move.list[[j]] <- path.df
     rm("path.df")
 }
-# move.list is a list of dataframes that individually represent the x,y path
-# of each particle (row1/df1 represents particle1)
+# move.list is a list of dataframes that individually, seen as a pair of vectors,
+# represent the x,y position of each particle for that observation
+
+# now, walk across observations, selecting specific particle paths
+particleZ.list <- vector(mode = "list", length = 50)
+
+for (j in 1:50) { # for each particle
+  particleZ.X <- vector("numeric", 0)
+  particleZ.Y <- vector("numeric", 0)
+  for (z in 1:50) { # for each observation
+    particleZ.X <- c(particleZ.X, move.list[[z]]$vectorX[j])
+    particleZ.Y <- c(particleZ.Y, move.list[[z]]$vectorY[j])
+  }
+  particleZ.list[[j]] <- data.frame(cbind(particleZ.X, particleZ.Y))
+  colnames(particleZ.list[[j]]) <- c("X", "Y")
+}
+
+# of each particle (row1/df1 represents particle1) 
 # CAUTION: wrap-around is not identified
 
 # plot the path of particle #21 and #41
-df <- as.data.frame(move.list[21])
+df <- particleZ.list[[21]]
 gg1 <- ggplot()  +
-    geom_path(aes(x=vectorX, y=vectorY), df, colour = "purple", alpha=0.6) 
-df <- as.data.frame(move.list[41])
+    geom_path(aes(x=X, y=Y), df, colour = "purple", alpha=0.6) 
+df <- df <- particleZ.list[[41]]
 gg2 <- ggplot()  +
-    geom_path(aes(x=vectorX, y=vectorY), df, colour = "green", alpha=0.6)
+    geom_path(aes(x=X, y=Y), df, colour = "green", alpha=0.6)
 
 grid.arrange(gg1, gg2, ncol=2, nrow=1)
 
