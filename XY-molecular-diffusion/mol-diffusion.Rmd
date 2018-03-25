@@ -134,17 +134,16 @@ for (j in 1:50) {
     rm("path.df")
 }
 # move.list is a list of dataframes that individually represent the x,y path
-# of each particle (row1 represnts particle1)
-# walk through the 50 particles in each move to collect its path
+# of each particle (row1/df1 represents particle1)
+# CAUTION: wrap-around is not identified
 
 # plot the path of particle #21 and #41
 df <- as.data.frame(move.list[21])
 gg1 <- ggplot()  +
-    geom_path(aes(x=vectorX, y=vectorY), df, fill="green", shape=21, colour = "purple", alpha=0.6) 
-
+    geom_path(aes(x=vectorX, y=vectorY), df, colour = "purple", alpha=0.6) 
 df <- as.data.frame(move.list[41])
 gg2 <- ggplot()  +
-    geom_path(aes(x=vectorX, y=vectorY), df, fill="red", shape=21, colour = "green", alpha=0.6)
+    geom_path(aes(x=vectorX, y=vectorY), df, colour = "green", alpha=0.6)
 
 grid.arrange(gg1, gg2, ncol=2, nrow=1)
 
