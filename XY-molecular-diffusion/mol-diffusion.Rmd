@@ -1,0 +1,183 @@
+---
+title: "simecol XY molecular diffusion"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library("simecol")
+
+# https://cran.r-project.org/web/packages/simecol/simecol.pdf
+diffusion.model <- rwalkModel(
+  main = function(time, init, parms, inputs = NULL) {
+    speed <- parms$speed
+    xleft <- parms$area[1]
+    xright <- parms$area[2]
+    ybottom <- parms$area[3]
+    ytop <- parms$area[4]
+    x <- init$x # x coordinate
+    y <- init$y # y coordinate
+    a <- init$a # angle (in radians)
+    n <- length(a)
+    ## Rule 1: respect environment (grid as given in "inputs")
+    ## 1a) identify location on "environmental 2D grid" for each individual
+    i.j <- array(c(pmax(1, ceiling(x)), pmax(1, ceiling(y))), dim=c(n, 2))
+    ## 1b) speed dependend on "environmental conditions"
+    speed <- speed * inputs[i.j]
+    ## Rule 2: Random Walk
+    a <- (a + 2 * pi / runif(a))
+    dx <- speed * cos(a)
+    dy <- speed * sin(a)
+    x <- x + dx
+    y <- y + dy
+    ## Rule 3: Wrap Around
+    x <- ifelse(x > xright, xleft, x)
+    y <- ifelse(y > ytop, ybottom, y)
+    x <- ifelse(x < xleft, xright, x)
+    y <- ifelse(y < ybottom, ytop, y)
+    data.frame(x=x, y=y, a=a)
+  },
+  times = c(from=0, to=100, by=1),
+  parms = list(ninds=50, speed = 1, area = c(0, 100, 0, 100)),
+  solver = "iteration",
+  initfunc = function(obj) {
+    ninds <- obj@parms$ninds
+    xleft <- obj@parms$area[1]
+    xright <- obj@parms$area[2]
+    ybottom <- obj@parms$area[3]
+    ytop <- obj@parms$area[4]
+    obj@init <- data.frame(x = runif(ninds) * (xright - xleft) + xleft,
+                          y = runif(ninds) * (ytop - ybottom) + ybottom,
+                          a = runif(ninds) * 2 * pi)
+    inp <- matrix(1, nrow=100, ncol=100)
+    inp[, 45:55] <- 0.2
+    inputs(obj) <- inp
+    obj
+  }
+)
+```
+
+
+```{r}
+diffusion.sim <- sim(diffusion.model)
+
+out(diffusion.sim)[[34]]$x
+```
+
+```{r}
+plot(out(diffusion.sim)[[34]]$x)
+```
+
+
+```{r}
+
+plotupca <- function(obj, type) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  if (type=="S4") {
+    o.df <- out(obj)  # output a dataframe
+  } else {
+    o.df <- obj
+  }
+  
+  head(o.df)
+  
+  gg1 <- ggplot()  +
+    geom_point(aes(y=rowNum, x=vectorX), o.df, colour = "purple", size=1, alpha=0.8)  +
+    geom_point(aes(y=rowNum, x=vectorY), o.df, colour = "green", size=1, alpha=0.8)
+  
+  gg2 <- ggplot()  +
+    geom_point(aes(x=vectorX, y=vectorY), o.df, fill="green", shape=21, colour = "purple", alpha=0.6) 
+  
+  
+  grid.arrange(gg1, gg2, ncol=2, nrow=1)
+
+}
+
+```
+
+```{r}
+# plotupca(out(diffusion.sim)[[34]]$x)
+
+vectorX <- out(diffusion.sim)[[34]]$x
+vectorY <- out(diffusion.sim)[[34]]$y
+
+points.df <- as.data.frame(vectorX)
+points.df$vectorY <- vectorY
+points.df$rowNum <- seq.int(nrow(points.df))
+
+head(points.df)
+
+plotupca(points.df, type="S3")
+```
+
+```{r}
+# plotupca(out(diffusion.sim)[[34]]$x)
+
+# graph the path of a particle
+
+# walk through the 50 moves (or "observations") 
+# getting the x,y coords for each particle
+move.list <- list()
+for (j in 1:50) {
+    vectorX <- out(diffusion.sim)[[j]]$x # get all x from observation j
+    vectorY <- out(diffusion.sim)[[j]]$y
+    path.df <- as.data.frame(vectorX)
+    path.df$vectorY <- vectorY
+    move.list[[j]] <- path.df
+    rm("path.df")
+}
+# move.list is a list of dataframes that individually represent the x,y path
+# of each particle (row1 represnts particle1)
+# walk through the 50 particles in each move to collect its path
+
+# plot the path of particle #21 and #41
+df <- as.data.frame(move.list[21])
+gg1 <- ggplot()  +
+    geom_path(aes(x=vectorX, y=vectorY), df, fill="green", shape=21, colour = "purple", alpha=0.6) 
+
+df <- as.data.frame(move.list[41])
+gg2 <- ggplot()  +
+    geom_path(aes(x=vectorX, y=vectorY), df, fill="red", shape=21, colour = "green", alpha=0.6)
+
+grid.arrange(gg1, gg2, ncol=2, nrow=1)
+
+```
+
+```{r}
+head(out(diffusion.sim)[22])
+```
+
+```{r}
+main(diffusion.sim)
+```
+
+```{r}
+init(diffusion.sim)
+```
+
+```{r}
+parms(diffusion.sim)
+```
+
+```{r}
+equations(diffusion.sim)
+```
+
+```{r}
+solver(diffusion.sim)
+```
+
+```{r}
+class(diffusion.sim)
+```
+
+```{r}
+#str(diffusion.sim)
+```

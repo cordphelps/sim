@@ -20,6 +20,9 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             dHARE <- (a - b * HARE - c * FOX) * HARE
             dFOX <- (-d + e * HARE) * FOX
             
+            HARE <- dHARE
+            FOX <- dFOX
+            
             # a, b, c, d, and e are positive constants to be determined from field research.
             # writing dHARE = alpha * HARE, then alpha = a - b*HARE - c*FOX
             # which is the net birth rate for hares. When FOX=0, this is the logistics
