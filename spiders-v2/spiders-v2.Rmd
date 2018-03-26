@@ -1,0 +1,113 @@
+---
+title: "simecol spiders v2"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library("simecol")
+
+# Spacio-Temporal Patterns of Ecology, case study: biological pest
+# control in vineyards. Section 5.2
+# changes in local prey abundance causes predator to search other prey habitats  
+#
+lv.model <- new("odeModel",                   # object class = 'odeModel'
+                
+         main = function(time, y, parms) {   # object method
+                                              # simecol magic: 2nd argument 'y' points to 'init'
+          with(as.list(c(parms, y)), {
+
+            dSPIDER <- SPIDER * ( -a + (k * b * PREYv)/(saturationConstantH + PREYv) + k * c * PREYw) # 
+            dPREYw <- PREYw * r * (1 - PREYw/carryingCapacityW) - c * SPIDER * PREYw #
+            dPREYv <- PREYv * (e - (b * SPIDER)/(saturationConstantH + PREYv)) # 
+            
+            SPIDER <- dSPIDER
+            PREYw <- dPREYw
+            PREYv <- dPREYv
+          
+            list(c(dSPIDER, dPREYw, dPREYv))
+           })
+         },
+         
+         #.0078125
+        times = seq(0, 50, .0078125), 
+        parms = c(a=3.1, b=2.87, c=0.8, e=3.5, r=1, carryingCapacityW=5, saturationConstantH=0.7, k=0.8),
+        init = c(SPIDER=10, PREYw=25, PREYv=25),
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
+        
+      )
+```
+
+
+```{r}
+lv.sim <- sim(lv.model)
+plot(out(lv.sim)$SPIDER)
+```
+
+
+```{r}
+
+plotupca <- function(obj, ...) {
+  
+  library(gridExtra)
+  library(ggplot2)
+  
+  o.df <- out(obj)  # output a dataframe
+  
+  gg1 <- ggplot()  +
+    geom_line(aes(x=time, y=PREYw), o.df, colour = "purple", size=1, alpha=0.8)  
+  
+  gg2 <- ggplot()  +
+    geom_line(aes(x=time, y=PREYv), o.df, colour = "purple", size=1, alpha=0.8) 
+  
+  gg3 <- ggplot()  +
+    geom_point(aes(x=time, y=SPIDER), o.df,  colour = "purple", size=1, alpha=0.6) 
+  
+  gg4 <- ggplot()  +
+    geom_point(aes(x=SPIDER, y=PREYw), o.df,  colour = "purple", alpha=0.6) 
+  
+  grid.arrange(gg1, gg2, gg3, gg4, ncol=1, nrow=4)
+
+}
+
+```
+
+```{r}
+ plotupca(lv.sim)
+```
+
+```{r}
+head(out(lv.sim))
+```
+
+```{r}
+main(lv.sim)
+```
+
+```{r}
+init(lv.sim)
+```
+
+```{r}
+parms(lv.sim)
+```
+
+```{r}
+equations(lv.sim)
+```
+
+```{r}
+solver(lv.sim)
+```
+
+```{r}
+class(lv.sim)
+```
+
+```{r}
+str(lv.sim)
+```
