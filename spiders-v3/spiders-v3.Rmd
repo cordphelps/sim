@@ -1,5 +1,5 @@
 ---
-title: "simecol spiders v2 'feeding saturation effect' "
+title: "simecol spiders v3 'insecticide effects persist' "
 output: github_document
 ---
 
@@ -14,7 +14,7 @@ library("simecol")
 # Spacio-Temporal Patterns of Ecology, case study: biological pest
 # control in vineyards. Section 5.2
 # changes in local prey abundance causes predator to search other prey habitats  
-# 'feeding saturation effect' : Holling type II
+# assume exponential decay of pesticide effects
 #
 lv.model <- new("odeModel",                   # object class = 'odeModel'
                 
@@ -22,9 +22,9 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
                                               # simecol magic: 2nd argument 'y' points to 'init'
           with(as.list(c(parms, y)), {
 
-            dSPIDER <- SPIDER * ( -a + (k * b * PREYv)/(saturationConstantH + PREYv) + k * c * PREYw) # 
-            dPREYw <- PREYw * r * (1 - PREYw/carryingCapacityW) - c * SPIDER * PREYw #
-            dPREYv <- PREYv * (e - (b * SPIDER)/(saturationConstantH + PREYv)) # 
+            dSPIDER <- SPIDER * ( -a + (k * b * PREYv)/(saturationConstantH + PREYv) + k * c * PREYw) - h * K * q * psi(insecticideEfficiencyAlpha, time) # 
+            dPREYw <- PREYw * r * (1 - PREYw/carryingCapacityW) - c * SPIDER * PREYw  - ( h * (1 - q) * psi(insecticideEfficiencyAlpha, time) ) #
+            dPREYv <- PREYv * (e - (b * SPIDER)/(saturationConstantH + PREYv)) - ( h * q * psi(insecticideEfficiencyAlpha, time) ) # 
             
             SPIDER <- dSPIDER
             PREYw <- dPREYw
@@ -33,12 +33,15 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             list(c(dSPIDER, dPREYw, dPREYv))
            })
          },
-         
+         equations = list(
+           psi = function(insecticideEfficiencyAlpha, time) {exp(-insecticideEfficiencyAlpha*(time))},
+           e = function() {exp(1)}
+         ),
          #.0078125
         times = seq(0, 50, .0078125), 
-        parms = c(a=3.1, b=2.87, c=0.8, e=3.5, r=1, carryingCapacityW=5, saturationConstantH=0.7, k=0.8),
+        parms = c(a=3.1, b=2.87, c=0.8, e=3.5, r=1, carryingCapacityW=5, saturationConstantH=0.7, h=0.7, k=0.01, K=0.8, q=0.2, insecticideEfficiencyAlpha=0.2),
         init = c(SPIDER=10, PREYw=25, PREYv=25),
-        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
+        solver = "euler"                      # 'lsoda' available for 'odemodel' class
         
       )
 ```

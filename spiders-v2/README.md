@@ -1,4 +1,4 @@
-simecol spiders v2
+simecol spiders v2 'feeding saturation effect'
 ================
 
 ``` r
@@ -11,6 +11,7 @@ library("simecol")
 # Spacio-Temporal Patterns of Ecology, case study: biological pest
 # control in vineyards. Section 5.2
 # changes in local prey abundance causes predator to search other prey habitats  
+# 'feeding saturation effect' : Holling type II
 #
 lv.model <- new("odeModel",                   # object class = 'odeModel'
                 
@@ -158,8 +159,8 @@ str(lv.sim)
     ##   .. ..- attr(*, "names")= chr [1:3] "SPIDER" "PREYw" "PREYv"
     ##   ..@ observer : NULL
     ##   ..@ main     :function (time, y, parms)  
-    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 10 17 24 10 17 10 10 24
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd6c1bcf1b8> 
+    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 11 17 25 10 17 10 11 25
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fec1348c3c8> 
     ##   ..@ equations: NULL
     ##   ..@ times    : num [1:6401] 0 0.00781 0.01562 0.02344 0.03125 ...
     ##   ..@ inputs   : NULL
