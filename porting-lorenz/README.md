@@ -4,7 +4,7 @@ simecol lorenz
 ### vensim mode 
  
 
-![alt text](lorenz/Lorenz.png "optional title")
+![alt text](lorenz/lorenz.png "optional title")
 
 
 ### simecol mode 
