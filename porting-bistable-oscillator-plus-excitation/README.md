@@ -1,15 +1,6 @@
 simecol bistable
 ================
 
-### vensim mode 
- 
-
-![alt text](bso/bistableOscExitation.png "optional title")
-
-
-### simecol mode 
-
-
 ``` r
 library("simecol")
 ```
@@ -32,7 +23,7 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
             kineticEnergy <- changedt
             potentialEnergy <- change0dt
             
-            list(c(potentialEnergy, kineticEnergy))    # object attributes (data) 
+            list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
             # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
             # change = kinetic energy
@@ -49,7 +40,7 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
         times = seq(0, 50, .015625),
         parms = c(factor=1, friction=.01),
         init = c(kineticEnergy=1, potentialEnergy=1),
-        solver = "rk4"                      # 'lsoda' available for 'odemodel' class
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
         
       )
 ```
@@ -93,12 +84,12 @@ head(out(bis.sim))
 ```
 
     ##       time kineticEnergy potentialEnergy
-    ## 1 0.000000     1.0000000        1.000000
-    ## 2 0.015625     0.9996153        1.015623
-    ## 3 0.031250     0.9987583        1.031236
-    ## 4 0.046875     0.9974063        1.046831
-    ## 5 0.062500     0.9955364        1.062402
-    ## 6 0.078125     0.9931257        1.077939
+    ## 1 0.000000      1.000000       1.0000000
+    ## 2 0.015625      1.015748       0.9998641
+    ## 3 0.031250      1.031744       0.9997681
+    ## 4 0.046875      1.047992       0.9997109
+    ## 5 0.062500      1.064495       0.9996914
+    ## 6 0.078125      1.081259       0.9997081
 
 ``` r
 main(bis.sim)
@@ -117,7 +108,7 @@ main(bis.sim)
     ##             kineticEnergy <- changedt
     ##             potentialEnergy <- change0dt
     ##             
-    ##             list(c(potentialEnergy, kineticEnergy))    # object attributes (data) 
+    ##             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
     ##             
     ##             # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
     ##             # change = kinetic energy
@@ -172,7 +163,7 @@ equations(bis.sim)
 solver(bis.sim)
 ```
 
-    ## [1] "rk4"
+    ## [1] "lsoda"
 
 ``` r
 class(bis.sim)
@@ -194,29 +185,30 @@ str(bis.sim)
     ##   ..@ observer : NULL
     ##   ..@ main     :function (times, y, parms)  
     ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 26 10 17 10 6 26
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fabdbf14348> 
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
     ##   ..@ equations:List of 4
     ##   .. ..$ excite :function (i)  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 28 21 28 51 21 51 28 28
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fabdbf14348> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
     ##   .. ..$ power  :function (i)  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 29 20 29 36 20 36 29 29
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fabdbf14348> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
     ##   .. ..$ change :function (i)  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 30 21 30 35 21 35 30 30
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fabdbf14348> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
     ##   .. ..$ change0:function (h, i, j, k, t)  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 31 22 31 83 22 83 31 31
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fabdbf14348> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
     ##   ..@ times    : num [1:3201] 0 0.0156 0.0312 0.0469 0.0625 ...
     ##   ..@ inputs   : NULL
-    ##   ..@ solver   : chr "rk4"
+    ##   ..@ solver   : chr "lsoda"
     ##   ..@ out      : deSolve [1:3201, 1:3] 0 0.0156 0.0312 0.0469 0.0625 ...
-    ##   .. ..- attr(*, "istate")= int [1:21] 0 3200 12801 NA NA NA NA NA NA NA ...
     ##   .. ..- attr(*, "dimnames")=List of 2
     ##   .. .. ..$ : NULL
     ##   .. .. ..$ : chr [1:3] "time" "kineticEnergy" "potentialEnergy"
+    ##   .. ..- attr(*, "istate")= int [1:21] 2 3470 5038 NA 3 3 0 52 22 NA ...
+    ##   .. ..- attr(*, "rstate")= num [1:5] 0.0156 0.0156 50.0035 0 11.6216
     ##   .. ..- attr(*, "lengthvar")= int 2
     ##   .. ..- attr(*, "class")= chr [1:2] "deSolve" "matrix"
-    ##   .. ..- attr(*, "type")= chr "rk"
+    ##   .. ..- attr(*, "type")= chr "lsoda"
     ##   ..@ initfunc : NULL

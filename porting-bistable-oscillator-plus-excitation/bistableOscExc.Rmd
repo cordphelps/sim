@@ -26,7 +26,7 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
             kineticEnergy <- changedt
             potentialEnergy <- change0dt
             
-            list(c(potentialEnergy, kineticEnergy))    # object attributes (data) 
+            list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
             # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
             # change = kinetic energy
@@ -43,7 +43,7 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
         times = seq(0, 50, .015625),
         parms = c(factor=1, friction=.01),
         init = c(kineticEnergy=1, potentialEnergy=1),
-        solver = "rk4"                      # 'lsoda' available for 'odemodel' class
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
         
       )
 ```
