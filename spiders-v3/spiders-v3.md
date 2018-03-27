@@ -27,7 +27,7 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             PREYw <- dPREYw
             PREYv <- dPREYv
           
-            list(c(dSPIDER, dPREYw, dPREYv))
+            list(c(SPIDER, PREYw, PREYv))
            })
          },
          equations = list(
@@ -37,8 +37,8 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
          #.0078125
         times = seq(0, 50, .0078125), 
         parms = c(a=3.1, b=2.87, c=0.8, e=3.5, r=1, carryingCapacityW=5, saturationConstantH=0.7, h=0.7, k=0.01, K=0.8, q=0.2, insecticideEfficiencyAlpha=0.2),
-        init = c(SPIDER=10, PREYw=25, PREYv=25),
-        solver = "euler"                      # 'lsoda' available for 'odemodel' class
+        init = c(SPIDER=10, PREYw=2500, PREYv=2500),
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
         
       )
 ```
@@ -85,13 +85,13 @@ plotupca <- function(obj, ...) {
 head(out(lv.sim))
 ```
 
-    ##        time    SPIDER    PREYw    PREYv
-    ## 1 0.0000000 10.000000 25.00000 25.00000
-    ## 2 0.0078125  9.774744 22.65188 25.46439
-    ## 3 0.0156250  9.553109 20.63889 25.94628
-    ## 4 0.0234375  9.335281 18.89792 26.44609
-    ## 5 0.0312500  9.121387 17.38058 26.96422
-    ## 6 0.0390625  8.911511 16.04917 27.50109
+    ##        time    SPIDER     PREYw    PREYv
+    ## 1 0.0000000 10.000000 2500.0000 2500.000
+    ## 2 0.0078125 10.394115  492.3822 2569.068
+    ## 3 0.0156250 10.375990  266.0655 2640.048
+    ## 4 0.0234375 10.267589  179.0346 2712.997
+    ## 5 0.0312500 10.120238  133.0887 2787.971
+    ## 6 0.0390625  9.952524  104.7736 2865.027
 
 ``` r
 main(lv.sim)
@@ -109,7 +109,7 @@ main(lv.sim)
     ##             PREYw <- dPREYw
     ##             PREYv <- dPREYv
     ##           
-    ##             list(c(dSPIDER, dPREYw, dPREYv))
+    ##             list(c(SPIDER, PREYw, PREYv))
     ##            })
     ##          }
 
@@ -118,7 +118,7 @@ init(lv.sim)
 ```
 
     ## SPIDER  PREYw  PREYv 
-    ##     10     25     25
+    ##     10   2500   2500
 
 ``` r
 parms(lv.sim)
@@ -157,7 +157,7 @@ equations(lv.sim)
 solver(lv.sim)
 ```
 
-    ## [1] "euler"
+    ## [1] "lsoda"
 
 ``` r
 class(lv.sim)
@@ -174,28 +174,29 @@ str(lv.sim)
     ## Formal class 'odeModel' [package "simecol"] with 10 slots
     ##   ..@ parms    : Named num [1:12] 3.1 2.87 0.8 3.5 1 5 0.7 0.7 0.01 0.8 ...
     ##   .. ..- attr(*, "names")= chr [1:12] "a" "b" "c" "e" ...
-    ##   ..@ init     : Named num [1:3] 10 25 25
+    ##   ..@ init     : Named num [1:3] 10 2500 2500
     ##   .. ..- attr(*, "names")= chr [1:3] "SPIDER" "PREYw" "PREYv"
     ##   ..@ observer : NULL
     ##   ..@ main     :function (time, y, parms)  
     ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 11 17 25 10 17 10 11 25
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd053409068> 
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f93b9647468> 
     ##   ..@ equations:List of 2
     ##   .. ..$ psi:function (insecticideEfficiencyAlpha, time)  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 27 18 27 101 18 101 27 27
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd053409068> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f93b9647468> 
     ##   .. ..$ e  :function ()  
     ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 28 16 28 34 16 34 28 28
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd053409068> 
+    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f93b9647468> 
     ##   ..@ times    : num [1:6401] 0 0.00781 0.01562 0.02344 0.03125 ...
     ##   ..@ inputs   : NULL
-    ##   ..@ solver   : chr "euler"
+    ##   ..@ solver   : chr "lsoda"
     ##   ..@ out      : deSolve [1:6401, 1:4] 0 0.00781 0.01562 0.02344 0.03125 ...
-    ##   .. ..- attr(*, "istate")= int [1:21] 0 6400 6401 NA NA NA NA NA NA NA ...
     ##   .. ..- attr(*, "dimnames")=List of 2
     ##   .. .. ..$ : NULL
     ##   .. .. ..$ : chr [1:4] "time" "SPIDER" "PREYw" "PREYv"
+    ##   .. ..- attr(*, "istate")= int [1:21] 2 6494 12989 NA 6 6 0 68 23 NA ...
+    ##   .. ..- attr(*, "rstate")= num [1:5] 0.00781 0.00781 50.00731 0 0
     ##   .. ..- attr(*, "lengthvar")= int 3
     ##   .. ..- attr(*, "class")= chr [1:2] "deSolve" "matrix"
-    ##   .. ..- attr(*, "type")= chr "rk"
+    ##   .. ..- attr(*, "type")= chr "lsoda"
     ##   ..@ initfunc : NULL

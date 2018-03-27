@@ -8,6 +8,10 @@ library("simecol")
     ## Loading required package: deSolve
 
 ``` r
+# Spacio-Temporal Patterns of Ecology, case study: biological pest
+# control in vineyards. pg 115
+#
+
 lv.model <- new("odeModel",                   # object class = 'odeModel'
                 
          main = function(time, y, parms) {   # object method
@@ -22,7 +26,7 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             PREYw <- dPREYw
             PREYv <- dPREYv
           
-            list(c(dSPIDER, dPREYw, dPREYv))
+            list(c(SPIDER, PREYw, PREYv))
            })
          },
          
@@ -97,7 +101,7 @@ main(lv.sim)
     ##             PREYw <- dPREYw
     ##             PREYv <- dPREYv
     ##           
-    ##             list(c(dSPIDER, dPREYw, dPREYv))
+    ##             list(c(SPIDER, PREYw, PREYv))
     ##            })
     ##          }
 
@@ -148,8 +152,8 @@ str(lv.sim)
     ##   .. ..- attr(*, "names")= chr [1:3] "SPIDER" "PREYw" "PREYv"
     ##   ..@ observer : NULL
     ##   ..@ main     :function (time, y, parms)  
-    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 20 10 17 10 6 20
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fa81441d2a8> 
+    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 10 17 24 10 17 10 10 24
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fc80996e0d8> 
     ##   ..@ equations: NULL
     ##   ..@ times    : num [1:6401] 0 0.00781 0.01562 0.02344 0.03125 ...
     ##   ..@ inputs   : NULL

@@ -29,7 +29,7 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             PREYw <- dPREYw
             PREYv <- dPREYv
           
-            list(c(dSPIDER, dPREYw, dPREYv))
+            list(c(SPIDER, PREYw, PREYv))
            })
          },
          

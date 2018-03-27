@@ -30,7 +30,7 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
             PREYw <- dPREYw
             PREYv <- dPREYv
           
-            list(c(dSPIDER, dPREYw, dPREYv))
+            list(c(SPIDER, PREYw, PREYv))
            })
          },
          equations = list(
@@ -40,8 +40,8 @@ lv.model <- new("odeModel",                   # object class = 'odeModel'
          #.0078125
         times = seq(0, 50, .0078125), 
         parms = c(a=3.1, b=2.87, c=0.8, e=3.5, r=1, carryingCapacityW=5, saturationConstantH=0.7, h=0.7, k=0.01, K=0.8, q=0.2, insecticideEfficiencyAlpha=0.2),
-        init = c(SPIDER=10, PREYw=25, PREYv=25),
-        solver = "euler"                      # 'lsoda' available for 'odemodel' class
+        init = c(SPIDER=10, PREYw=2500, PREYv=2500),
+        solver = "lsoda"                      # 'lsoda' available for 'odemodel' class
         
       )
 ```
