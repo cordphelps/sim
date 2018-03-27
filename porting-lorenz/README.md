@@ -7,7 +7,7 @@ simecol lorenz
 ![alt text](lorenz/lorenz.png "optional title")
 
 
-### simecol mode 
+### simecol mode
 
 ``` r
 library("simecol")
@@ -30,23 +30,25 @@ lorenz.model <- new("odeModel",                   # object class = 'odeModel'
             verticalTempDelta <- verticalTempDt
             convectiveFlowDelta <- convectiveFlowDt
           
-            list(c(horizTempDelta, verticalTempDelta, convectiveFlowDelta))
+            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
            })
          },
          
          #.0078125
         times = seq(0, 50, .0078125), 
-        parms = c(prandtl=10, rayleigh=28, height=8/3),
+        parms = c(prandtl=10, rayleigh=28, height=8/3), # 2.66666666667
         init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0),
-        solver = "rk4"
+        solver = "lsoda"  # use "lsoda" instead of "rk4". It is faster and more precise.
         
       )
 ```
 
 ``` r
 lorenz.sim <- sim(lorenz.model)
-#plot(lorenz.sim)
+plot(lorenz.sim)
 ```
+
+![](lorenz_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 ``` r
 plotupca <- function(obj, ...) {
@@ -57,7 +59,7 @@ plotupca <- function(obj, ...) {
   o.df <- out(obj)  # output a dataframe
   
   gg1 <- ggplot()  +
-    geom_line(aes(x=verticalTempDelta, y=convectiveFlowDelta), o.df, colour = "green", size=1, alpha=0.8)
+    geom_path(aes(x=verticalTempDelta, y=convectiveFlowDelta), o.df, colour = "green", size=1, alpha=0.8)
   
   gg2 <- ggplot()  +
     geom_line(aes(x=time, y=convectiveFlowDelta), o.df,  colour = "purple", alpha=0.6) 
@@ -72,10 +74,6 @@ plotupca <- function(obj, ...) {
  plotupca(lorenz.sim)
 ```
 
-    ## Warning: Removed 6301 rows containing missing values (geom_path).
-
-    ## Warning: Removed 6301 rows containing missing values (geom_path).
-
 ![](lorenz_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
@@ -83,12 +81,12 @@ head(out(lorenz.sim))
 ```
 
     ##        time convectiveFlowDelta horizTempDelta verticalTempDelta
-    ## 1 0.0000000         0.000000000      1.0000000         0.0000000
-    ## 2 0.0078125        -0.008728548      0.9991512         0.0784315
-    ## 3 0.0156250        -0.019563975      0.9965861         0.1574912
-    ## 4 0.0234375        -0.032988830      0.9922734         0.2372266
-    ## 5 0.0312500        -0.049596997      0.9861773         0.3177246
-    ## 6 0.0390625        -0.070118823      0.9782553         0.3991204
+    ## 1 0.0000000          0.00000000       1.000000      0.0000000000
+    ## 2 0.0078125          0.07506709       1.000514      0.0002947338
+    ## 3 0.0156250          0.14514002       1.016805      0.0011507602
+    ## 4 0.0234375          0.21173848       1.047831      0.0025537160
+    ## 5 0.0312500          0.27620038       1.092866      0.0045218346
+    ## 6 0.0390625          0.33972050       1.151467      0.0071017494
 
 ``` r
 main(lorenz.sim)
@@ -106,7 +104,7 @@ main(lorenz.sim)
     ##             verticalTempDelta <- verticalTempDt
     ##             convectiveFlowDelta <- convectiveFlowDt
     ##           
-    ##             list(c(horizTempDelta, verticalTempDelta, convectiveFlowDelta))
+    ##             list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
     ##            })
     ##          }
 
@@ -134,7 +132,7 @@ equations(lorenz.sim)
 solver(lorenz.sim)
 ```
 
-    ## [1] "rk4"
+    ## [1] "lsoda"
 
 ``` r
 class(lorenz.sim)
@@ -156,17 +154,18 @@ str(lorenz.sim)
     ##   ..@ observer : NULL
     ##   ..@ main     :function (times, y, parms)  
     ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 20 10 17 10 6 20
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f8bf2d29e98> 
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f8764c5c898> 
     ##   ..@ equations: NULL
     ##   ..@ times    : num [1:6401] 0 0.00781 0.01562 0.02344 0.03125 ...
     ##   ..@ inputs   : NULL
-    ##   ..@ solver   : chr "rk4"
+    ##   ..@ solver   : chr "lsoda"
     ##   ..@ out      : deSolve [1:6401, 1:4] 0 0.00781 0.01562 0.02344 0.03125 ...
-    ##   .. ..- attr(*, "istate")= int [1:21] 0 6400 25601 NA NA NA NA NA NA NA ...
     ##   .. ..- attr(*, "dimnames")=List of 2
     ##   .. .. ..$ : NULL
     ##   .. .. ..$ : chr [1:4] "time" "convectiveFlowDelta" "horizTempDelta" "verticalTempDelta"
+    ##   .. ..- attr(*, "istate")= int [1:21] 2 6800 13581 NA 6 6 0 68 23 NA ...
+    ##   .. ..- attr(*, "rstate")= num [1:5] 0.00781 0.00781 50.00359 0 43.98515
     ##   .. ..- attr(*, "lengthvar")= int 3
     ##   .. ..- attr(*, "class")= chr [1:2] "deSolve" "matrix"
-    ##   .. ..- attr(*, "type")= chr "rk"
+    ##   .. ..- attr(*, "type")= chr "lsoda"
     ##   ..@ initfunc : NULL

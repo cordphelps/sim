@@ -25,15 +25,15 @@ lorenz.model <- new("odeModel",                   # object class = 'odeModel'
             verticalTempDelta <- verticalTempDt
             convectiveFlowDelta <- convectiveFlowDt
           
-            list(c(horizTempDelta, verticalTempDelta, convectiveFlowDelta))
+            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
            })
          },
          
          #.0078125
         times = seq(0, 50, .0078125), 
-        parms = c(prandtl=10, rayleigh=28, height=8/3),
+        parms = c(prandtl=10, rayleigh=28, height=8/3), # 2.66666666667
         init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0),
-        solver = "rk4"
+        solver = "lsoda"  # use "lsoda" instead of "rk4". It is faster and more precise.
         
       )
 ```
@@ -41,7 +41,7 @@ lorenz.model <- new("odeModel",                   # object class = 'odeModel'
 
 ```{r}
 lorenz.sim <- sim(lorenz.model)
-#plot(lorenz.sim)
+plot(lorenz.sim)
 ```
 
 
@@ -55,7 +55,7 @@ plotupca <- function(obj, ...) {
   o.df <- out(obj)  # output a dataframe
   
   gg1 <- ggplot()  +
-    geom_line(aes(x=verticalTempDelta, y=convectiveFlowDelta), o.df, colour = "green", size=1, alpha=0.8)
+    geom_path(aes(x=verticalTempDelta, y=convectiveFlowDelta), o.df, colour = "green", size=1, alpha=0.8)
   
   gg2 <- ggplot()  +
     geom_line(aes(x=time, y=convectiveFlowDelta), o.df,  colour = "purple", alpha=0.6) 
