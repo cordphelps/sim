@@ -9,6 +9,8 @@ simecol lorenz
 
 ### simecol mode
 
+
+
 ``` r
 library("simecol")
 ```
@@ -30,14 +32,14 @@ lorenz.model <- new("odeModel",                   # object class = 'odeModel'
             verticalTempDelta <- verticalTempDt
             convectiveFlowDelta <- convectiveFlowDt
           
-            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
+            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init() *
            })
          },
          
          #.0078125
         times = seq(0, 50, .0078125), 
         parms = c(prandtl=10, rayleigh=28, height=8/3), # 2.66666666667
-        init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0),
+        init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0), # *match order with list() *
         solver = "lsoda"  # use "lsoda" instead of "rk4". It is faster and more precise.
         
       )
@@ -104,7 +106,7 @@ main(lorenz.sim)
     ##             verticalTempDelta <- verticalTempDt
     ##             convectiveFlowDelta <- convectiveFlowDt
     ##           
-    ##             list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
+    ##             list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init() *
     ##            })
     ##          }
 
@@ -154,7 +156,7 @@ str(lorenz.sim)
     ##   ..@ observer : NULL
     ##   ..@ main     :function (times, y, parms)  
     ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 20 10 17 10 6 20
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f8764c5c898> 
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f813954ca98> 
     ##   ..@ equations: NULL
     ##   ..@ times    : num [1:6401] 0 0.00781 0.01562 0.02344 0.03125 ...
     ##   ..@ inputs   : NULL

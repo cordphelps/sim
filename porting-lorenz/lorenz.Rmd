@@ -25,14 +25,14 @@ lorenz.model <- new("odeModel",                   # object class = 'odeModel'
             verticalTempDelta <- verticalTempDt
             convectiveFlowDelta <- convectiveFlowDt
           
-            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init()*
+            list(c(convectiveFlowDelta, horizTempDelta, verticalTempDelta)) # *match order with init() *
            })
          },
          
          #.0078125
         times = seq(0, 50, .0078125), 
         parms = c(prandtl=10, rayleigh=28, height=8/3), # 2.66666666667
-        init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0),
+        init = c(convectiveFlowDelta=0, horizTempDelta=1, verticalTempDelta=0), # *match order with list() *
         solver = "lsoda"  # use "lsoda" instead of "rk4". It is faster and more precise.
         
       )
