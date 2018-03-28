@@ -1,5 +1,5 @@
 ---
-title: "simecol bistable"
+title: "simecol bistable plus excitation"
 output: github_document
 ---
 
@@ -16,11 +16,9 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
          main = function(times, y, parms) {   # object method
                                               # simecol magic: 2nd argument 'y' points to 'init'
           with(as.list(c(parms, y)), {
-            
-            # kineticEnergy = change0
-            # potentialEnergy = change
 
-            change0dt <- change0(friction, factor, potentialEnergy, kineticEnergy, times)
+            change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+ sin(times)
             changedt <- kineticEnergy
             
             kineticEnergy <- changedt
@@ -28,18 +26,8 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
             
             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
-            # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
-            # change = kinetic energy
-            # Excitation = SIN(Time)
-            
            })
          },
-         equations = list(
-           excite = function(i) {sin( i / (2*pi) )},
-           power = function(i) {i^3},
-           change = function(i) {i},
-           change0 = function(h, i, j, k, t) { (j - power(j) ) - h * k + excite(t)}
-         ),
         times = seq(0, 50, .015625),
         parms = c(factor=1, friction=.01),
         init = c(kineticEnergy=1, potentialEnergy=1),
