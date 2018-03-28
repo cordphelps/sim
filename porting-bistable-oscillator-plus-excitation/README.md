@@ -1,4 +1,4 @@
-simecol bistable
+simecol bistable plus excitation
 ================
 
 ``` r
@@ -13,11 +13,9 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
          main = function(times, y, parms) {   # object method
                                               # simecol magic: 2nd argument 'y' points to 'init'
           with(as.list(c(parms, y)), {
-            
-            # kineticEnergy = change0
-            # potentialEnergy = change
 
-            change0dt <- change0(friction, factor, potentialEnergy, kineticEnergy, times)
+            change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+ sin(times)
             changedt <- kineticEnergy
             
             kineticEnergy <- changedt
@@ -25,18 +23,8 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
             
             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
-            # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
-            # change = kinetic energy
-            # Excitation = SIN(Time)
-            
            })
          },
-         equations = list(
-           excite = function(i) {sin( i / (2*pi) )},
-           power = function(i) {i^3},
-           change = function(i) {i},
-           change0 = function(h, i, j, k, t) { (j - power(j) ) - h * k + excite(t)}
-         ),
         times = seq(0, 50, .015625),
         parms = c(factor=1, friction=.01),
         init = c(kineticEnergy=1, potentialEnergy=1),
@@ -85,11 +73,11 @@ head(out(bis.sim))
 
     ##       time kineticEnergy potentialEnergy
     ## 1 0.000000      1.000000       1.0000000
-    ## 2 0.015625      1.015748       0.9998641
-    ## 3 0.031250      1.031744       0.9997681
-    ## 4 0.046875      1.047992       0.9997109
-    ## 5 0.062500      1.064495       0.9996914
-    ## 6 0.078125      1.081259       0.9997081
+    ## 2 0.015625      1.015748       0.9999651
+    ## 3 0.031250      1.031744       1.0001692
+    ## 4 0.046875      1.047992       1.0006048
+    ## 5 0.062500      1.064495       1.0012655
+    ## 6 0.078125      1.081259       1.0021427
 
 ``` r
 main(bis.sim)
@@ -98,21 +86,15 @@ main(bis.sim)
     ## function(times, y, parms) {   # object method
     ##                                               # simecol magic: 2nd argument 'y' points to 'init'
     ##           with(as.list(c(parms, y)), {
-    ##             
-    ##             # kineticEnergy = change0
-    ##             # potentialEnergy = change
     ## 
-    ##             change0dt <- change0(friction, factor, potentialEnergy, kineticEnergy, times)
+    ##             change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+    ##  sin(times)
     ##             changedt <- kineticEnergy
     ##             
     ##             kineticEnergy <- changedt
     ##             potentialEnergy <- change0dt
     ##             
     ##             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
-    ##             
-    ##             # change0 = potential energy - POWER(potential energy ,3)  - friction*kinetic energy + Excitation
-    ##             # change = kinetic energy
-    ##             # Excitation = SIN(Time)
     ##             
     ##            })
     ##          }
@@ -135,29 +117,7 @@ parms(bis.sim)
 equations(bis.sim)
 ```
 
-    ## $excite
-    ## function (i) 
-    ## {
-    ##     sin(i/(2 * pi))
-    ## }
-    ## 
-    ## $power
-    ## function (i) 
-    ## {
-    ##     i^3
-    ## }
-    ## 
-    ## $change
-    ## function (i) 
-    ## {
-    ##     i
-    ## }
-    ## 
-    ## $change0
-    ## function (h, i, j, k, t) 
-    ## {
-    ##     (j - power(j)) - h * k + excite(t)
-    ## }
+    ## NULL
 
 ``` r
 solver(bis.sim)
@@ -184,21 +144,9 @@ str(bis.sim)
     ##   .. ..- attr(*, "names")= chr [1:2] "kineticEnergy" "potentialEnergy"
     ##   ..@ observer : NULL
     ##   ..@ main     :function (times, y, parms)  
-    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 26 10 17 10 6 26
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
-    ##   ..@ equations:List of 4
-    ##   .. ..$ excite :function (i)  
-    ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 28 21 28 51 21 51 28 28
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
-    ##   .. ..$ power  :function (i)  
-    ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 29 20 29 36 20 36 29 29
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
-    ##   .. ..$ change :function (i)  
-    ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 30 21 30 35 21 35 30 30
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
-    ##   .. ..$ change0:function (h, i, j, k, t)  
-    ##   .. .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 31 22 31 83 22 83 31 31
-    ##   .. .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7fd3f45f3348> 
+    ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 20 10 17 10 6 20
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f9e7adf0e00> 
+    ##   ..@ equations: NULL
     ##   ..@ times    : num [1:3201] 0 0.0156 0.0312 0.0469 0.0625 ...
     ##   ..@ inputs   : NULL
     ##   ..@ solver   : chr "lsoda"
@@ -206,8 +154,8 @@ str(bis.sim)
     ##   .. ..- attr(*, "dimnames")=List of 2
     ##   .. .. ..$ : NULL
     ##   .. .. ..$ : chr [1:3] "time" "kineticEnergy" "potentialEnergy"
-    ##   .. ..- attr(*, "istate")= int [1:21] 2 3470 5038 NA 3 3 0 52 22 NA ...
-    ##   .. ..- attr(*, "rstate")= num [1:5] 0.0156 0.0156 50.0035 0 11.6216
+    ##   .. ..- attr(*, "istate")= int [1:21] 2 3213 4287 NA 3 3 0 52 22 NA ...
+    ##   .. ..- attr(*, "rstate")= num [1:5] 0.0156 0.0156 50.0005 0 6.875
     ##   .. ..- attr(*, "lengthvar")= int 2
     ##   .. ..- attr(*, "class")= chr [1:2] "deSolve" "matrix"
     ##   .. ..- attr(*, "type")= chr "lsoda"
