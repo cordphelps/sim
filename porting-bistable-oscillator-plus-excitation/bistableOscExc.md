@@ -13,13 +13,13 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
          main = function(times, y, parms) {   # object method
                                               # simecol magic: 2nd argument 'y' points to 'init'
           with(as.list(c(parms, y)), {
-
-            change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
- sin(times)
-            changedt <- kineticEnergy
             
-            kineticEnergy <- changedt
-            potentialEnergy <- change0dt
+            PEdt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+ sin(times)
+            KEdt <- kineticEnergy
+            
+            potentialEnergy <- PEdt
+            kineticEnergy <- KEdt
             
             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
@@ -86,13 +86,13 @@ main(bis.sim)
     ## function(times, y, parms) {   # object method
     ##                                               # simecol magic: 2nd argument 'y' points to 'init'
     ##           with(as.list(c(parms, y)), {
-    ## 
-    ##             change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
-    ##  sin(times)
-    ##             changedt <- kineticEnergy
     ##             
-    ##             kineticEnergy <- changedt
-    ##             potentialEnergy <- change0dt
+    ##             PEdt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+    ##  sin(times)
+    ##             KEdt <- kineticEnergy
+    ##             
+    ##             potentialEnergy <- PEdt
+    ##             kineticEnergy <- KEdt
     ##             
     ##             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
     ##             
@@ -145,7 +145,7 @@ str(bis.sim)
     ##   ..@ observer : NULL
     ##   ..@ main     :function (times, y, parms)  
     ##   .. ..- attr(*, "srcref")=Class 'srcref'  atomic [1:8] 6 17 20 10 17 10 6 20
-    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7f9e7adf0e00> 
+    ##   .. .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x7ff533b2a7c8> 
     ##   ..@ equations: NULL
     ##   ..@ times    : num [1:3201] 0 0.0156 0.0312 0.0469 0.0625 ...
     ##   ..@ inputs   : NULL

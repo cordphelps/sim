@@ -16,13 +16,13 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
          main = function(times, y, parms) {   # object method
                                               # simecol magic: 2nd argument 'y' points to 'init'
           with(as.list(c(parms, y)), {
-
-            change0dt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
- sin(times)
-            changedt <- kineticEnergy
             
-            kineticEnergy <- changedt
-            potentialEnergy <- change0dt
+            PEdt <- potentialEnergy - '^'(potentialEnergy,3)  - friction*kineticEnergy +
+ sin(times)
+            KEdt <- kineticEnergy
+            
+            potentialEnergy <- PEdt
+            kineticEnergy <- KEdt
             
             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
