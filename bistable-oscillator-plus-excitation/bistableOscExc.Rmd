@@ -21,8 +21,8 @@ bis.model <- new("odeModel",                   # object class = 'odeModel'
  sin(times)
             KEdt <- kineticEnergy
             
-            potentialEnergy <- PEdt
-            kineticEnergy <- KEdt
+            potentialEnergy <- KEdt
+            kineticEnergy <- PEdt
             
             list(c(kineticEnergy, potentialEnergy))    # object attributes (data) 
             
