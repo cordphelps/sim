@@ -1,0 +1,75 @@
+deSolve Brusselator
+================
+
+``` r
+##
+## install.packages("ReacTran")
+##
+## brusselator: "Solving Differential Equations in R", 9.3.2, Karline Soetart et al.
+#
+# https://cran.r-project.org/web/packages/diffEq/vignettes/PDEinR.pdf 
+#
+
+brusselator2D <- function(t, y, parms) {
+  
+  X1 <- matrix(nrow=Nx, ncol=Ny, data=y[1:(Nx*Ny)])
+  X2 <- matrix(nrow=Nx, ncol=Ny, data=y[(Nx*Ny+1):(2*Nx*Ny)])
+  
+  dX1 <- 1 + X1^2*X2 - 4*X1 +
+    tran.2D(C=X1, D.x=D_X1, D.y=D_X1, dx=Gridx, dy=Gridy)$dC
+  
+  dX2 <- 3*X1 - X1^2*X2 + 
+    tran.2D(C=X2, D.x=D_X2, D.y=D_X2, dx=Gridx, dy=Gridy)$dC
+  
+  list(c(dX1, dX2))
+}
+
+require(ReacTran)
+```
+
+    ## Loading required package: ReacTran
+
+    ## Loading required package: rootSolve
+
+    ## Loading required package: deSolve
+
+    ## Loading required package: shape
+
+``` r
+require(deSolve)
+
+Nx <- 50
+Ny <- 50
+Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)
+Gridy <- setup.grid.1D(x.up = 0, x.down = 1, N = Ny)
+D_X1 <- 2
+D_X2 <- 8 * D_X1
+
+X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
+X2ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
+
+yini <- c(X1ini, X2ini)
+
+times <- 0:8
+
+print(system.time(
+  out <- ode.2D(y=yini, parms=NULL, func=brusselator2D, 
+                nspec=2, dimens=c(Nx, Ny), times=times, 
+                lrw=2000000, names=c("X1", "X2"))
+))
+```
+
+    ##    user  system elapsed 
+    ##   3.542   0.147   3.810
+
+``` r
+par(oma=c(0,0,1,0), mar=rep(4,4))
+
+image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
+      main=paste("t= ", times),
+      grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
+mtext(side=3, outer=TRUE, cex=1.5, line=-1, 
+      "2d brusselator, species X1")
+```
+
+![](brusselator_files/figure-markdown_github/unnamed-chunk-1-1.png)
