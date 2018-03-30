@@ -65,7 +65,7 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   0.520   0.024   0.564
+    ##   0.509   0.021   0.542
 
 ``` r
 # > skim(out)
