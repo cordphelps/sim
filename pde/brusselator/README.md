@@ -50,7 +50,7 @@ D_X2 <- 8 * D_X1
 X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny)) # random initial conditions
 X2ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
 
-yini <- c(X1ini, X2ini)
+yini <- c(X1ini, X2ini)  # a vector of 50 numbers between 0 and 1
 
 times <- 0:8
 
@@ -65,7 +65,7 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   0.509   0.021   0.542
+    ##   0.546   0.018   0.571
 
 ``` r
 # > skim(out)
@@ -100,25 +100,54 @@ print(system.time(
 #[6,]    5 0.3837966 0.3837966 0.3837966 0.3837966
 #> 
 
-#out[3, 2500:3000] <- 7
-#out[3, 200:300] <- 3
-#out[3, 400:500] <- 3
-#out[3, 600:700] <- 3
-#out[3, 800:900] <- 3
-#out[3, 1000:2500] <- 3
-
 par(oma=c(0,0,1,0), mar=rep(4,4)) # oma = increase the size of the outer margin
 
 # https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/plot.deSolve
 
 # for the matrix 'out', the first column represnts time, 
 # the next N columns contain profiles ( [2: (N+1)] )
+#                    # for a 5x5 test matrix, after column 'time', 
+# out[1,1:26] <- 0   # the next 25 data columns are data for equation X1
+# out[2,27:51] <- 0  # then, the trailing 25 data columns are data for equation X2
+#
+ggRow <- 3
+ggData.matrix <- cbind(out[ggRow,2:6], out[ggRow,7:11], 
+                   out[ggRow,12:16], out[ggRow,17:21],
+                   out[ggRow,22:26])
+# http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
+library(reshape)
+melt.ed <- melt(ggData.matrix)
+library(ggplot2)
+library(gridExtra)
+gg1 <- ggplot(data = melt.ed, aes(x=X1, y=X2, fill=value)) + 
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = .5, limit = c(0,1),
+                       name="scale heading")
+
+ggRow <- 7
+ggData.matrix <- cbind(out[ggRow,2:6], out[ggRow,7:11], 
+                   out[ggRow,12:16], out[ggRow,17:21],
+                   out[ggRow,22:26])
+melt.ed <- melt(ggData.matrix)
+gg2 <- ggplot(data = melt.ed, aes(x=X1, y=X2, fill=value)) + 
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = .5, limit = c(0,1),
+                       name="scale heading")
+
+grid.arrange(gg1, gg2)
+```
+
+![](brusselator_files/figure-markdown_github/unnamed-chunk-1-1.png)
+
+``` r
 # 'which' extracts a 'property' representing solution values for one of the equations (pg 160)
-image(out, which="X2", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
+image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       main=paste("t= ", times),
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
 mtext(side=3, outer=TRUE, cex=1.5, line=-1, 
       "2d brusselator, species X1")
 ```
 
-![](brusselator_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](brusselator_files/figure-markdown_github/unnamed-chunk-1-2.png)
