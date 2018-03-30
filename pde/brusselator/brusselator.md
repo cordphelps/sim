@@ -8,6 +8,7 @@ deSolve Brusselator
 ## brusselator: "Solving Differential Equations in R", 9.3.2, Karline Soetart et al.
 #
 # https://cran.r-project.org/web/packages/diffEq/vignettes/PDEinR.pdf 
+# https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/ode.2D
 #
 
 brusselator2D <- function(t, y, parms) {
@@ -52,6 +53,7 @@ yini <- c(X1ini, X2ini)
 
 times <- 0:8
 
+
 print(system.time(
   out <- ode.2D(y=yini, parms=NULL, func=brusselator2D, 
                 nspec=2, dimens=c(Nx, Ny), times=times, 
@@ -60,12 +62,51 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   3.542   0.147   3.810
+    ##   3.659   0.212   3.934
 
 ``` r
+# > skim(out)
+# No skim method exists for class deSolvematrix.
+# > summary(out)
+#                   X1           X2
+# Min.        0.001202 1.402000e-04
+# 1st Qu.     0.289200 1.382000e+00
+# Median      0.383800 2.769000e+00
+# Mean        0.773400 2.697000e+00
+# 3rd Qu.     0.703400 4.011000e+00
+# Max.        3.701000 4.719000e+00
+# N       22500.000000 2.250000e+04  22,500 values for x and y
+# sd          1.046993 1.489611e+00
+# > is.array(out)
+# [1] TRUE
+# > is.matrix(out)
+# [1] TRUE
+# > nrow(out)     # one row for each time value
+# [1] 9
+# > ncol(out)     # 50x50=2,500 cells, plus z data for each = 5,000 + 1 points per time value (45,009 total)
+# [1] 5001
+# > 
+# > head(out[,1:5])
+#     time         1         2         3         4
+#[1,]    0 0.8071870 0.1053788 0.4744620 0.5969623
+#[2,]    1 0.2790019 0.2790019 0.2790019 0.2790019
+#[3,]    2 0.2891623 0.2891623 0.2891623 0.2891623
+#[4,]    3 0.3105695 0.3105695 0.3105695 0.3105695
+#[5,]    4 0.3399305 0.3399305 0.3399305 0.3399305
+#[6,]    5 0.3837966 0.3837966 0.3837966 0.3837966
+#> 
+
+out[3, 2500:3000] <- 7
+#out[3, 200:300] <- 3
+#out[3, 400:500] <- 3
+#out[3, 600:700] <- 3
+#out[3, 800:900] <- 3
+#out[3, 1000:2500] <- 3
+
 par(oma=c(0,0,1,0), mar=rep(4,4))
 
-image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
+# https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/plot.deSolve
+image(out, which="X2", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       main=paste("t= ", times),
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
 mtext(side=3, outer=TRUE, cex=1.5, line=-1, 
