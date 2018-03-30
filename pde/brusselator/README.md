@@ -8,6 +8,7 @@ deSolve Brusselator
 ## brusselator: "Solving Differential Equations in R", 9.3.2, Karline Soetart et al.
 #
 # https://cran.r-project.org/web/packages/diffEq/vignettes/PDEinR.pdf 
+# https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/ode.2D
 #
 
 brusselator2D <- function(t, y, parms) {
@@ -38,20 +39,24 @@ require(ReacTran)
 ``` r
 require(deSolve)
 
-Nx <- 50
-Ny <- 50
-Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)
+Nx <- 5
+Ny <- 5
+Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)  
 Gridy <- setup.grid.1D(x.up = 0, x.down = 1, N = Ny)
-D_X1 <- 2
+
+D_X1 <- 2          # two diffusion coefficients that generate interesting patterns
 D_X2 <- 8 * D_X1
 
-X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
+X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny)) # random initial conditions
 X2ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
 
 yini <- c(X1ini, X2ini)
 
 times <- 0:8
 
+# lrw = size of the work space
+# nspc = number of modelled components
+#
 print(system.time(
   out <- ode.2D(y=yini, parms=NULL, func=brusselator2D, 
                 nspec=2, dimens=c(Nx, Ny), times=times, 
@@ -60,12 +65,56 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   3.542   0.147   3.810
+    ##   0.520   0.024   0.564
 
 ``` r
-par(oma=c(0,0,1,0), mar=rep(4,4))
+# > skim(out)
+# No skim method exists for class deSolvematrix.
+# > summary(out)
+#                   X1           X2
+# Min.        0.001202 1.402000e-04
+# 1st Qu.     0.289200 1.382000e+00
+# Median      0.383800 2.769000e+00
+# Mean        0.773400 2.697000e+00
+# 3rd Qu.     0.703400 4.011000e+00
+# Max.        3.701000 4.719000e+00
+# N       22500.000000 2.250000e+04  22,500 values for x and y
+# sd          1.046993 1.489611e+00
+# > is.array(out)
+# [1] TRUE
+# > is.matrix(out)
+# [1] TRUE
+# > nrow(out)     # one row for each time value
+# [1] 9
+# > ncol(out)     # 50x50 = 2,500 cells for each 'property' 
+#                   = 5,000 + 1 cells per time value (45,009 total)
+# [1] 5001
+# > 
+# > head(out[,1:5])
+#     time         1         2         3         4
+#[1,]    0 0.8071870 0.1053788 0.4744620 0.5969623
+#[2,]    1 0.2790019 0.2790019 0.2790019 0.2790019
+#[3,]    2 0.2891623 0.2891623 0.2891623 0.2891623
+#[4,]    3 0.3105695 0.3105695 0.3105695 0.3105695
+#[5,]    4 0.3399305 0.3399305 0.3399305 0.3399305
+#[6,]    5 0.3837966 0.3837966 0.3837966 0.3837966
+#> 
 
-image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
+#out[3, 2500:3000] <- 7
+#out[3, 200:300] <- 3
+#out[3, 400:500] <- 3
+#out[3, 600:700] <- 3
+#out[3, 800:900] <- 3
+#out[3, 1000:2500] <- 3
+
+par(oma=c(0,0,1,0), mar=rep(4,4)) # oma = increase the size of the outer margin
+
+# https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/plot.deSolve
+
+# for the matrix 'out', the first column represnts time, 
+# the next N columns contain profiles ( [2: (N+1)] )
+# 'which' extracts a 'property' representing solution values for one of the equations (pg 160)
+image(out, which="X2", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       main=paste("t= ", times),
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
 mtext(side=3, outer=TRUE, cex=1.5, line=-1, 

@@ -39,21 +39,24 @@ require(ReacTran)
 ``` r
 require(deSolve)
 
-Nx <- 50
-Ny <- 50
-Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)
+Nx <- 5
+Ny <- 5
+Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)  
 Gridy <- setup.grid.1D(x.up = 0, x.down = 1, N = Ny)
-D_X1 <- 2
+
+D_X1 <- 2          # two diffusion coefficients that generate interesting patterns
 D_X2 <- 8 * D_X1
 
-X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
+X1ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny)) # random initial conditions
 X2ini <- matrix(nrow=Nx, ncol=Ny, data=runif(Nx*Ny))
 
 yini <- c(X1ini, X2ini)
 
 times <- 0:8
 
-
+# lrw = size of the work space
+# nspc = number of modelled components
+#
 print(system.time(
   out <- ode.2D(y=yini, parms=NULL, func=brusselator2D, 
                 nspec=2, dimens=c(Nx, Ny), times=times, 
@@ -62,7 +65,7 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   3.659   0.212   3.934
+    ##   0.520   0.024   0.564
 
 ``` r
 # > skim(out)
@@ -83,7 +86,8 @@ print(system.time(
 # [1] TRUE
 # > nrow(out)     # one row for each time value
 # [1] 9
-# > ncol(out)     # 50x50=2,500 cells, plus z data for each = 5,000 + 1 points per time value (45,009 total)
+# > ncol(out)     # 50x50 = 2,500 cells for each 'property' 
+#                   = 5,000 + 1 cells per time value (45,009 total)
 # [1] 5001
 # > 
 # > head(out[,1:5])
@@ -96,16 +100,20 @@ print(system.time(
 #[6,]    5 0.3837966 0.3837966 0.3837966 0.3837966
 #> 
 
-out[3, 2500:3000] <- 7
+#out[3, 2500:3000] <- 7
 #out[3, 200:300] <- 3
 #out[3, 400:500] <- 3
 #out[3, 600:700] <- 3
 #out[3, 800:900] <- 3
 #out[3, 1000:2500] <- 3
 
-par(oma=c(0,0,1,0), mar=rep(4,4))
+par(oma=c(0,0,1,0), mar=rep(4,4)) # oma = increase the size of the outer margin
 
 # https://www.rdocumentation.org/packages/deSolve/versions/1.20/topics/plot.deSolve
+
+# for the matrix 'out', the first column represnts time, 
+# the next N columns contain profiles ( [2: (N+1)] )
+# 'which' extracts a 'property' representing solution values for one of the equations (pg 160)
 image(out, which="X2", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       main=paste("t= ", times),
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
