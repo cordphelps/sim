@@ -39,8 +39,8 @@ require(ReacTran)
 ``` r
 require(deSolve)
 
-Nx <- 5
-Ny <- 5
+Nx <- 50
+Ny <- 50
 Gridx <- setup.grid.1D(x.up = 0, x.down = 1, N = Nx)  
 Gridy <- setup.grid.1D(x.up = 0, x.down = 1, N = Ny)
 
@@ -65,7 +65,7 @@ print(system.time(
 ```
 
     ##    user  system elapsed 
-    ##   0.546   0.018   0.571
+    ##   3.441   0.230   3.721
 
 ``` r
 # > skim(out)
@@ -110,10 +110,21 @@ par(oma=c(0,0,1,0), mar=rep(4,4)) # oma = increase the size of the outer margin
 # out[1,1:26] <- 0   # the next 25 data columns are data for equation X1
 # out[2,27:51] <- 0  # then, the trailing 25 data columns are data for equation X2
 #
-ggRow <- 3
-ggData.matrix <- cbind(out[ggRow,2:6], out[ggRow,7:11], 
+# per the [NOTE] below, rows are handed to image() as 'columns'
+#                       columns are handed to image() as 'rows', but they are in reverse order
+#
+# 90 degree counter clockwise rotation of R matrix:
+# Doing the transpose prior to the reverse is the same as rotate counter clockwise:
+# https://stackoverflow.com/questions/16496210/rotate-a-matrix-in-r
+# foo <- apply(t(foo),2,rev)
+#
+ggRow <- 2
+ggData.matrix <- rbind(out[ggRow,2:6], out[ggRow,7:11], 
                    out[ggRow,12:16], out[ggRow,17:21],
                    out[ggRow,22:26])
+ggData.matrix <- apply(t(ggData.matrix),2,rev)
+
+
 # http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
 library(reshape)
 melt.ed <- melt(ggData.matrix)
@@ -125,10 +136,11 @@ gg1 <- ggplot(data = melt.ed, aes(x=X1, y=X2, fill=value)) +
                        midpoint = .5, limit = c(0,1),
                        name="scale heading")
 
-ggRow <- 7
-ggData.matrix <- cbind(out[ggRow,2:6], out[ggRow,7:11], 
+ggRow <- 1
+ggData.matrix <- rbind(out[ggRow,2:6], out[ggRow,7:11], 
                    out[ggRow,12:16], out[ggRow,17:21],
                    out[ggRow,22:26])
+ggData.matrix <- apply(t(ggData.matrix),2,rev)
 melt.ed <- melt(ggData.matrix)
 gg2 <- ggplot(data = melt.ed, aes(x=X1, y=X2, fill=value)) + 
   geom_tile(color = "white") +
@@ -142,6 +154,11 @@ grid.arrange(gg1, gg2)
 ![](brusselator_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 ``` r
+# > ?image  [NOTE]
+# ... Notice that image interprets the z matrix as a table of f(x[i], y[j]) values, so that the x axis 
+# corresponds to row number and the y axis to column number, with column 1 at the bottom, i.e. a 90 
+# degree counter-clockwise rotation of the conventional printed layout of a matrix.
+#
 # 'which' extracts a 'property' representing solution values for one of the equations (pg 160)
 image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       main=paste("t= ", times),
