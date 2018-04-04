@@ -1,4 +1,4 @@
-2-D Brusselator: disecting the ode.2D() result matrix - at the bottom, compare the ggplot() row 1 heatmap to the image() t0 heatmap
+2-D Brusselator: disecting the ode.2D() result matrix - at the bottom, compare the ggplot() row 1 heatmap to the image() t = 0 heatmap
 ================
 
 ``` r
@@ -173,7 +173,7 @@ image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
 mtext(side=3, outer=TRUE, cex=1.5, line=-1, 
       "2d brusselator, species X1")
-      
+
 ```
 
 ``` r
