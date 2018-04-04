@@ -173,7 +173,35 @@ image(out, which="X1", xlab="x", ylab="y", mfrow = c(3,3), ask=FALSE,
       grid= list(x=Gridx$x.mid, y=Gridy$x.mid))
 mtext(side=3, outer=TRUE, cex=1.5, line=-1, 
       "2d brusselator, species X1")
+      
+```
 
+``` r
+
+# [ NOTE (see ggBuild() ) ]
+# > ?image  
+# ... Notice that image interprets the z matrix as a table of f(x[i], y[j]) values, so that the x axis 
+# corresponds to row number and the y axis to column number, with column 1 at the bottom, i.e. a 90 
+# degree counter-clockwise rotation of the conventional printed layout of a matrix.
+# ggBuild() needs to accomodate this scheme
+
+```
+
+![](brusselator_files/figure-markdown_github/unnamed-chunk-2-1.png)
+
+``` r
+
+gg1 <- ggBuild(ggRow=1, data=out, DimX=Nx, DimY=Ny)
+gg2 <- ggBuild(ggRow=2, data=out, DimX=Nx, DimY=Ny)
+library(gridExtra)
+grid.arrange(gg1, gg2, ncol=1, nrow=2)
+```
+
+![](brusselator_files/figure-markdown_github/unnamed-chunk-2-2.png)
+
+
+
+``` r
 # the ggplot() row 1 heatmap seems to match the image() t0 heatmap
 # rows 2:9 ; row contents are almost identical row-to-row... 
 # out[] row 1 data looks credible (like it is the result of the integration), 
@@ -277,23 +305,4 @@ print(yini)
     ## [43] 0.51097697 0.72699032 0.78640445 0.26571867 0.37930697 0.36127600
     ## [49] 0.55650306 0.63541449
 
-``` r
-# [ NOTE (see ggBuild() ) ]
-# > ?image  
-# ... Notice that image interprets the z matrix as a table of f(x[i], y[j]) values, so that the x axis 
-# corresponds to row number and the y axis to column number, with column 1 at the bottom, i.e. a 90 
-# degree counter-clockwise rotation of the conventional printed layout of a matrix.
-# ggBuild() needs to accomodate this scheme
 
-gg1 <- ggBuild(ggRow=1, data=out, DimX=Nx, DimY=Ny)
-```
-
-![](brusselator_files/figure-markdown_github/unnamed-chunk-2-1.png)
-
-``` r
-gg2 <- ggBuild(ggRow=2, data=out, DimX=Nx, DimY=Ny)
-library(gridExtra)
-grid.arrange(gg1, gg2, ncol=1, nrow=2)
-```
-
-![](brusselator_files/figure-markdown_github/unnamed-chunk-2-2.png)
